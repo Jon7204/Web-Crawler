@@ -54,7 +54,8 @@ def main():
                     print(f"No pages found containing all words {words}.")
             else:
                 print("No index loaded. Please build or load the index first.")
-        
+        else:
+            print("Unknown command. Please try again.")
         
 if __name__ == "__main__":
     main()
