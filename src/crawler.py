@@ -4,10 +4,11 @@ from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 
 def crawl(base_url, politeness_window=6):
-    visited = set()
-    to_visit = [base_url]
+    visited = set() # Set to keep track of visited URLs
+    to_visit = [base_url] # List to keep track of URLs to visit
     pages = {}
 
+    # Crawl until there are no more URLs to visit
     while to_visit:
         url = to_visit.pop(0)
         if url in visited:
@@ -18,13 +19,15 @@ def crawl(base_url, politeness_window=6):
             visited.add(url)
             pages[url] = response.text
             print(f"Crawled: {url}")
-            
+
+            # Parse the page and find all links
             soup = BeautifulSoup(response.text, 'html.parser')
             for link in soup.find_all('a', href=True):
                 absolute_link = urljoin(url, link['href'])
                 if urlparse(absolute_link).netloc == urlparse(base_url).netloc:
                     to_visit.append(absolute_link)
-
+                    
+            # Respect the politeness policy
             if to_visit:
                 time.sleep(politeness_window)
         except requests.RequestException as e:
