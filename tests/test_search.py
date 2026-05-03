@@ -52,6 +52,7 @@ class TestSearchFunctions(unittest.TestCase):
         result = find_pages([], self.index)
         self.assertEqual(result, set())
 
+    # Test the find_pages function with multiple words
     def test_find_pages_multiple_words(self):
         # Add another word to the index for testing
         self.index["world"] = {
