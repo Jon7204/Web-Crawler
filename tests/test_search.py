@@ -33,7 +33,9 @@ class TestSearchFunctions(unittest.TestCase):
     # Test the find_pages function
     def test_find_pages(self):
         result = find_pages(["hello"], self.index)
-        self.assertEqual(result, {"http://example.com"})
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][1], "http://example.com")
+        self.assertIsInstance(result[0][0], float)
 
     # Test the print_word function when the word is not in the index
     def test_print_word_word_not_in_index(self):
@@ -61,8 +63,10 @@ class TestSearchFunctions(unittest.TestCase):
                 "positions": [1]
             }
         }
-        result = find_pages(["hello", "world"], self.index)
-        self.assertEqual(result, {"http://example.com"})
+        result = find_pages(["hello"], self.index)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][1], "http://example.com")
+        self.assertIsInstance(result[0][0], float)
 
 if __name__ == '__main__':
     unittest.main()

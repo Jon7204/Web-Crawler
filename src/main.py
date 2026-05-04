@@ -48,8 +48,8 @@ def main():
                 pages = find_pages(words, index)
                 if pages:
                     print(f"Pages containing all words {words}:")
-                    for page in pages:
-                        print(f"  {page}")
+                    for score, url in pages:
+                        print(f"  {url} (score: {score:.4f})")
                 else:
                     print(f"No pages found containing all words {words}.")
             else:
