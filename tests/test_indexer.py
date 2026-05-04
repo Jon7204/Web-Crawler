@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import unittest
-from indexer import build_index, extract_text, tokenize
+from indexer import build_index, extract_text, tokenize, STOPWORD_FILTERING
 
 class TestIndexer(unittest.TestCase):
 
@@ -32,8 +32,11 @@ class TestIndexer(unittest.TestCase):
     def test_tokenize(self):
         text = "Hello world! This is a test."
         tokens = tokenize(text)
-        self.assertEqual(tokens, ["hello", "world", "test"])
-    
+        if STOPWORD_FILTERING:
+            self.assertEqual(tokens, ["hello", "world", "test"])
+        else:
+            self.assertEqual(tokens, ["hello", "world", "this", "is", "a", "test"])
+
     # Test the build_index function with an empty page
     def test_empty_page(self):
         pages = {
