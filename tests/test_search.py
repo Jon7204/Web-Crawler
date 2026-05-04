@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import unittest
 from io import StringIO
 from unittest.mock import patch
-from search import print_word, find_pages
+from search import print_word, find_pages, compute_tfidf
 
 class TestSearchFunctions(unittest.TestCase):
 
@@ -67,6 +67,20 @@ class TestSearchFunctions(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0][1], "http://example.com")
         self.assertIsInstance(result[0][0], float)
+    
+    # Test the compute_tfidf function
+    def test_tfidf_computation(self):
+        # Add another word to the index for testing
+        self.index["world"] = {
+            "http://example.com": {
+                "frequency": 1,
+                "positions": [1]
+            }
+        }
+        tfidf_hello = compute_tfidf("hello", "http://example.com", self.index)
+        tfidf_world = compute_tfidf("world", "http://example.com", self.index)
+        self.assertAlmostEqual(tfidf_hello, -1.3862943611198906)
+        self.assertAlmostEqual(tfidf_world, -0.6931471805599453)
 
 if __name__ == '__main__':
     unittest.main()
