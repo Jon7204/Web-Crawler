@@ -1,7 +1,8 @@
+from curses import raw
 import json
 import os
 
-from search import print_word, find_pages
+from search import print_word, parse_query
 from indexer import build_index
 from crawler import crawl
 
@@ -11,7 +12,8 @@ url = "https://quotes.toscrape.com"
 def main():
     index = None
     while True:
-        command = input("> ").lower()
+        raw = input("> ")
+        command = raw.lower()
         if command == "quit" or command == "exit" or command == "q":
             break
 
@@ -44,14 +46,13 @@ def main():
         
         elif command.startswith("find "):
             if index is not None:
-                words = command[5:].split()
-                pages = find_pages(words, index)
+                query = raw[5:]
+                pages = parse_query(query, index)
                 if pages:
-                    print(f"Pages containing all words {words}:")
                     for score, url in pages:
                         print(f"  {url} (score: {score:.4f})")
                 else:
-                    print(f"No pages found containing all words {words}.")
+                    print(f"No pages found for query: {query}")
             else:
                 print("No index loaded. Please build or load the index first.")
         else:
