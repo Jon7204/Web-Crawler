@@ -32,7 +32,7 @@ class TestIndexer(unittest.TestCase):
     def test_tokenize(self):
         text = "Hello world! This is a test."
         tokens = tokenize(text)
-        self.assertEqual(tokens, ["hello", "world", "this", "is", "a", "test"])
+        self.assertEqual(tokens, ["hello", "world", "test"])
     
     # Test the build_index function with an empty page
     def test_empty_page(self):

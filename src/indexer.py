@@ -1,5 +1,8 @@
 import re
 from bs4 import BeautifulSoup
+
+# Ignore common stop words to reduce noise in the index
+STOPWORDS = {"the", "a", "an", "is", "it", "in", "on", "at", "to", "and", "or", "of", "for", "with", "that", "this", "was", "are"}
  
  # Extract text from HTML
 def extract_text(html):
@@ -10,7 +13,8 @@ def extract_text(html):
 
 # Tokenize text into words, converting to lowercase and removing punctuation
 def tokenize(text):
-    return re.findall(r'\b\w+\b', text.lower())
+    tokens = re.findall(r'\b\w+\b', text.lower())
+    return [token for token in tokens if token not in STOPWORDS]
 
 # Build reverse index
 def build_index(pages):
