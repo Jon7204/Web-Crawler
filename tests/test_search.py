@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import unittest
 from io import StringIO
 from unittest.mock import patch
-from search import print_word, find_pages, compute_tfidf
+from search import print_word, find_pages, compute_tfidf, parse_query
 
 class TestSearchFunctions(unittest.TestCase):
 
@@ -81,6 +81,46 @@ class TestSearchFunctions(unittest.TestCase):
         tfidf_world = compute_tfidf("world", "http://example.com", self.index)
         self.assertAlmostEqual(tfidf_hello, -1.3862943611198906)
         self.assertAlmostEqual(tfidf_world, -0.6931471805599453)
+    
+    def test_parse_query_and(self):
+        # Add another word to the index for testing
+        self.index["world"] = {
+            "http://example.com": {
+                "frequency": 1,
+                "positions": [1]
+            }
+        }
+        result = parse_query("hello AND world", self.index)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][1], "http://example.com")
+
+    def test_parse_query_or(self):
+        result = parse_query("hello OR world", self.index)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][1], "http://example.com")
+
+    def test_parse_query_not(self):
+        result = parse_query("hello NOT world", self.index)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][1], "http://example.com")
+
+    def test_parse_query_word_not_in_index_and(self):
+        result = parse_query("hello AND world", self.index)
+        self.assertEqual(result, [])
+    
+    def test_parse_query_word_not_in_index_or(self):
+        result = parse_query("hello OR world", self.index)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][1], "http://example.com")
+     
+    def test_parse_query_no_words_found_or(self):
+        result = parse_query("foo OR bar", self.index)
+        self.assertEqual(result, [])
+    
+    def test_parse_query_word_not_in_index_not(self):
+        result = parse_query("hello NOT world", self.index)
+        self.assertEqual(result[0][1], "http://example.com")
+
 
 if __name__ == '__main__':
     unittest.main()

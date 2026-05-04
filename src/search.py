@@ -26,6 +26,49 @@ def find_pages(list_of_words, index):
     scored_urls.sort(reverse=True)
     return scored_urls
 
+# Parse the query and return matching pages based on AND, OR, NOT operators
+def parse_query(query, index):
+    if " AND " in query:
+        words = query.split(" AND ")
+        # what if a word isn't in the index?
+        for word in words:
+            if word not in index:
+                print(f"  '{word}' not found in index.")
+                return []
+        return find_pages(words, index)
+    
+    elif " OR " in query:
+        words = query.split(" OR ")
+        urls = set()
+        for word in words:
+            if word in index:
+                urls.update(set(index[word].keys()))
+            else:
+                print(f"  '{word}' not found in index.")
+                pass
+        if not urls:
+            print("  No URLs found.")
+            return []
+        scored = [(sum(compute_tfidf(word, url, index) for word in words), url) for url in urls]
+        scored.sort(reverse=True)
+        return scored
+    
+    elif " NOT " in query:
+        words = query.split(" NOT ")
+        include_urls = set(index[words[0]].keys()) if words[0] in index else set()
+        exclude_urls = set(index[words[1]].keys()) if words[1] in index else set()
+        if not include_urls:
+            print(f"  '{words[0]}' not found in index.")
+            return []
+        final_urls = include_urls - exclude_urls
+        scored = [(sum(compute_tfidf(word, url, index) for word in [words[0]]), url) for url in final_urls]
+        scored.sort(reverse=True)
+        return scored
+    
+    else:
+        return find_pages(query.split(), index)
+
+# Compute the TF-IDF score for a given word and URL
 def compute_tfidf(word, url, index):
     if word not in index or url not in index[word]:
         return 0.0
