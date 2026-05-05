@@ -97,8 +97,8 @@ class TestMain(unittest.TestCase):
                         main()
                         output = mock_stdout.getvalue()
                         print(repr(output))
-                        self.assertIn("Pages containing all words ['test']:", output)
                         self.assertIn("  http://example.com", output)
+                        self.assertIn("score:", output)
 
 if __name__ == '__main__':
     unittest.main()

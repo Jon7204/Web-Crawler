@@ -14,11 +14,11 @@ def print_word(word, index):
 # Find pages that contain all the words in the list
 def find_pages(list_of_words, index):
     if not list_of_words or list_of_words[0] not in index:
-        return set()
+        return []
     urls = set(index[list_of_words[0]].keys())
     for word in list_of_words[1:]:
         if word not in index:
-            return set()
+            return []
         urls = urls.intersection(set(index[word].keys()))
     
     # Compute TF-IDF scores for the URLs and sort them
@@ -28,35 +28,53 @@ def find_pages(list_of_words, index):
 
 # Parse the query and return matching pages based on AND, OR, NOT operators
 def parse_query(query, index):
+    query = query.strip()
+    if not query:
+        print("  Empty query.")
+        return []
+
     if " AND " in query:
-        words = query.split(" AND ")
-        # what if a word isn't in the index?
+        words = [word.strip() for word in query.split(" AND ")] # Strip whitespace from each word
         for word in words:
-            if word not in index:
+            if word == "" or word.isspace(): # Check for empty or whitespace-only words
+                print("  Empty word in query.")
+                return []
+            elif word not in index: # Check if the word is not in the index
                 print(f"  '{word}' not found in index.")
                 return []
-        return find_pages(words, index)
+        return find_pages(words, index) # Use the find_pages function to get URLs that contain all the words
     
     elif " OR " in query:
-        words = query.split(" OR ")
+        words = [word.strip() for word in query.split(" OR ")] # Strip whitespace from each word
         urls = set()
         for word in words:
-            if word in index:
-                urls.update(set(index[word].keys()))
+            if word == "" or word.isspace(): # Check for empty or whitespace-only words
+                print("  Empty word in query.")
+                return []
+            elif word in index:
+                urls.update(set(index[word].keys())) # Add URLs that contain the word to the set
             else:
                 print(f"  '{word}' not found in index.")
                 pass
         if not urls:
             print("  No URLs found.")
             return []
+        # Compute TF-IDF scores for the URLs and sort them
         scored = [(sum(compute_tfidf(word, url, index) for word in words), url) for url in urls]
         scored.sort(reverse=True)
         return scored
     
     elif " NOT " in query:
-        words = query.split(" NOT ")
+        words = [word.strip() for word in query.split(" NOT ")] # Strip whitespace from each word
+        if len(words) != 2:
+            print("  Invalid NOT query format. Use 'word1 NOT word2'.")
+            return []
+        if words[0] == words[1]:
+            print("  Cannot exclude the same word you're searching for.")
+            return []
         include_urls = set(index[words[0]].keys()) if words[0] in index else set()
         exclude_urls = set(index[words[1]].keys()) if words[1] in index else set()
+
         if not include_urls:
             print(f"  '{words[0]}' not found in index.")
             return []
