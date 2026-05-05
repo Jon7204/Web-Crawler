@@ -31,7 +31,7 @@ def main():
             print(FIND_HELP)
 
         # Handle main commands
-        
+
         elif command == "build":
             print(f"  Crawling {url}")
             pages = crawl(url)
@@ -68,6 +68,10 @@ def main():
                         print(f"  {url} (score: {score:.4f})")
             else:
                 print("  No index loaded. Please build or load the index first.")
+        elif command == "print":
+            print("  Please specify a word to print. Usage: print <word>")
+        elif command == "find":
+            print("  Please specify a query to find. Usage: find <query>")
         else:
             print("  Unknown command. Please try again.")
 
