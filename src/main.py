@@ -17,31 +17,31 @@ def main():
             break
 
         elif command == "build":
-            print(f"Crawling {url}")
+            print(f"  Crawling {url}")
             pages = crawl(url)
-            print(f"Building index for {len(pages)} pages")
+            print(f"  Building index for {len(pages)} pages")
             index = build_index(pages)
 
-            print("Index built. Saving index to data/index.json")
+            print("  Index built. Saving index to data/index.json")
             json_index = json.dumps(index, indent=2)
             with open("data/index.json", "w") as f:
                 f.write(json_index)
-            print("Index built and saved to data/index.json")
+            print("  Index built and saved to data/index.json")
 
         elif command == "load":
             if os.path.exists("data/index.json"):
                 with open("data/index.json", "r") as f:
                     index = json.load(f)
-                print("Index loaded from data/index.json")
+                print("  Index loaded from data/index.json")
             else:
-                print("No index found. Please build the index first.")
+                print("  No index found. Please build the index first.")
         
         elif command.startswith("print "):
             if index is not None:
                 word = command[6:]
                 print_word(word, index)
             else:
-                print("No index loaded. Please build or load the index first.")
+                print("  No index loaded. Please build or load the index first.")
         
         elif command.startswith("find "):
             if index is not None:
@@ -50,12 +50,10 @@ def main():
                 if pages:
                     for score, url in pages:
                         print(f"  {url} (score: {score:.4f})")
-                else:
-                    print(f"No pages found for query: {query}")
             else:
-                print("No index loaded. Please build or load the index first.")
+                print("  No index loaded. Please build or load the index first.")
         else:
-            print("Unknown command. Please try again.")
-        
+            print("  Unknown command. Please try again.")
+
 if __name__ == "__main__":
     main()
