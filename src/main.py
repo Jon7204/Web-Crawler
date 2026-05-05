@@ -1,10 +1,10 @@
-from curses import raw
 import json
 import os
 
 from search import print_word, parse_query
 from indexer import build_index
 from crawler import crawl
+from help import HELP_TEXT, PRINT_HELP, FIND_HELP, BUILD_HELP, LOAD_HELP
 
 def main():
     url = "https://quotes.toscrape.com"
@@ -15,6 +15,16 @@ def main():
         command = raw.lower()
         if command == "quit" or command == "exit" or command == "q":
             break
+        elif command == "help":
+            print(HELP_TEXT)
+        elif command in ("build --help", "build --h"):
+            print(BUILD_HELP)
+        elif command in ("load --help", "load --h"):
+            print(LOAD_HELP)
+        elif command in ("print --help", "print --h"):
+            print(PRINT_HELP)
+        elif command in ("find --help", "find --h"):
+            print(FIND_HELP)
 
         elif command == "build":
             print(f"  Crawling {url}")
