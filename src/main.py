@@ -11,10 +11,14 @@ def main():
     index = None
 
     while True:
-        raw = input("> ")
-        command = raw.lower()
+        # Need the raw input for queries
+        raw = input("> ") # Get the raw input from the user
+        command = raw.lower() # Convert the command to lowercase for easier comparison
+        # Check for quit 
         if command == "quit" or command == "exit" or command == "q":
             break
+
+        # Handle help commands
         elif command == "help":
             print(HELP_TEXT)
         elif command in ("build --help", "build --h"):
@@ -26,6 +30,8 @@ def main():
         elif command in ("find --help", "find --h"):
             print(FIND_HELP)
 
+        # Handle main commands
+        
         elif command == "build":
             print(f"  Crawling {url}")
             pages = crawl(url)

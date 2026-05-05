@@ -5,16 +5,16 @@ from bs4 import BeautifulSoup
 STOPWORDS = {"the", "a", "an", "is", "it", "in", "on", "at", "to", "and", "or", "of", "for", "with", "that", "this", "was", "are"}
 STOPWORD_FILTERING = True # Set to False to include stop words in the index
 
- # Extract text from HTML
+# Extract text from HTML
 def extract_text(html):
     soup = BeautifulSoup(html, 'html.parser')
     text = soup.get_text()
-    text = re.sub(r'\s+', ' ', text).strip()
+    text = re.sub(r'\s+', ' ', text).strip() # Normalize whitespace
     return text
 
 # Tokenize text into words, converting to lowercase and removing punctuation
 def tokenize(text):
-    tokens = re.findall(r'\b\w+\b', text.lower())
+    tokens = re.findall(r'\b\w+\b', text.lower()) # Extract words, ignoring punctuation and converting to lowercase
     if STOPWORD_FILTERING:
         return [token for token in tokens if token not in STOPWORDS]
     return tokens

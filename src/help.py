@@ -1,3 +1,5 @@
+# File contains all the help text for the command line tool.
+
 HELP_TEXT = """
 Available commands:
   build              Crawl quotes.toscrape.com and build the inverted index

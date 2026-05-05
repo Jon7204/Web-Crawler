@@ -15,16 +15,16 @@ def crawl(base_url, politeness_window=6):
             continue
         try:
             response = requests.get(url)
-            response.raise_for_status()
+            response.raise_for_status() # Check if the request was successful
             visited.add(url)
-            pages[url] = response.text
+            pages[url] = response.text 
             print(f"Crawled: {url}")
 
             # Parse the page and find all links
             soup = BeautifulSoup(response.text, 'html.parser')
             for link in soup.find_all('a', href=True):
                 absolute_link = urljoin(url, link['href'])
-                if urlparse(absolute_link).netloc == urlparse(base_url).netloc:
+                if urlparse(absolute_link).netloc == urlparse(base_url).netloc: # Only crawl links within the same domain
                     to_visit.append(absolute_link)
                     
             # Respect the politeness policy

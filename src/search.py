@@ -5,7 +5,7 @@ from difflib import get_close_matches
 def print_word(word, index):
     if word in index:
         print(f"  Word: '{word}'")
-        for url, data in index[word].items():
+        for url, data in index[word].items(): # Retrieve each URL and its associated data for the word
             print(f"  URL: {url}")
             print(f"    Frequency: {data['frequency']}")
             print(f"    Positions: {data['positions']}")
@@ -15,7 +15,7 @@ def print_word(word, index):
 
 # Find pages that contain all the words in the list
 def find_pages(list_of_words, index):
-    if not list_of_words or list_of_words[0] not in index:
+    if not list_of_words or list_of_words[0] not in index: # Check if the list is empty or if the first word is not in the index
         if list_of_words:
              print(f"  Word not found in index: {list_of_words[0]}")
              suggest_word(list_of_words[0], index)   
@@ -23,13 +23,13 @@ def find_pages(list_of_words, index):
             print(f"  No pages found for words: {list_of_words}")
         return []
     
-    urls = set(index[list_of_words[0]].keys())
-    for word in list_of_words[1:]:
+    urls = set(index[list_of_words[0]].keys()) # Start with the set of URLs that contain the first word
+    for word in list_of_words[1:]: 
         if word not in index:
             print(f"  Word not found in index: {word}")
             suggest_word(word, index)   
             return []
-        urls = urls.intersection(set(index[word].keys()))
+        urls = urls.intersection(set(index[word].keys())) # Intersect with the set of URLs that contain the next word to find common URLs
 
     if not urls:
         print(f"  No pages found for words: {list_of_words}")
@@ -51,8 +51,8 @@ def parse_query(query, index):
             print(f"  Invalid query: cannot start or end with '{operator}'.")
             return []
 
-
-    if " AND " in query:
+    # find_pages already handles AND logic, so just split on " AND " and pass the words to find_pages
+    if " AND " in query: 
         words = [word.strip() for word in query.split(" AND ")] # Strip whitespace from each word
         for word in words:
             if word == "" or word.isspace(): # Check for empty or whitespace-only words
@@ -62,9 +62,9 @@ def parse_query(query, index):
                 print(f"  '{word}' not found in index.")
                 suggest_word(word, index) 
                 return []
-        return find_pages(words, index) # Use the find_pages function to get URLs that contain all the words
+        return find_pages(words, index)
     
-
+    # OR logic: find all URLs that contain any of the words, then compute TF-IDF scores and sort them
     elif " OR " in query:
         words = [word.strip() for word in query.split(" OR ")] # Strip whitespace from each word
         urls = set()
@@ -86,7 +86,7 @@ def parse_query(query, index):
         scored.sort(reverse=True)
         return scored
     
-
+    # NOT logic: find URLs that contain the first word but not the second word, then compute TF-IDF scores and sort them
     elif " NOT " in query:
         words = [word.strip() for word in query.split(" NOT ")] # Strip whitespace from each word
         if len(words) != 2:

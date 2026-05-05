@@ -82,6 +82,7 @@ class TestSearchFunctions(unittest.TestCase):
         self.assertAlmostEqual(tfidf_hello, -1.3862943611198906)
         self.assertAlmostEqual(tfidf_world, -0.6931471805599453)
     
+    # Test the parse_query function with AND, OR, NOT operators
     def test_parse_query_and(self):
         # Add another word to the index for testing
         self.index["world"] = {
@@ -104,6 +105,7 @@ class TestSearchFunctions(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0][1], "http://example.com")
 
+    # Test the parse_query function when words are not in the index
     def test_parse_query_word_not_in_index_and(self):
         result = parse_query("hello AND world", self.index)
         self.assertEqual(result, [])
@@ -121,6 +123,7 @@ class TestSearchFunctions(unittest.TestCase):
         result = parse_query("hello NOT world", self.index)
         self.assertEqual(result[0][1], "http://example.com")
     
+    # Test the parse_query function with invalid queries
     def test_and_missing_second_term(self):
         result = parse_query("hello AND ", self.index)
         self.assertEqual(result, [])
