@@ -1,4 +1,5 @@
 from math import log
+from difflib import get_close_matches
 
 # Print the word, its frequency, and positions in the URL
 def print_word(word, index):
@@ -10,16 +11,23 @@ def print_word(word, index):
             print(f"    Positions: {data['positions']}")
     else:
         print(f"  Word '{word}' not found in index.")
+        suggest_word(word, index)   
 
 # Find pages that contain all the words in the list
 def find_pages(list_of_words, index):
     if not list_of_words or list_of_words[0] not in index:
-        print(f"  No pages found for words: {list_of_words}")
+        if list_of_words:
+             print(f"  Word not found in index: {list_of_words[0]}")
+             suggest_word(list_of_words[0], index)   
+        else:
+            print(f"  No pages found for words: {list_of_words}")
         return []
+    
     urls = set(index[list_of_words[0]].keys())
     for word in list_of_words[1:]:
         if word not in index:
             print(f"  Word not found in index: {word}")
+            suggest_word(word, index)   
             return []
         urls = urls.intersection(set(index[word].keys()))
 
@@ -43,6 +51,7 @@ def parse_query(query, index):
             print(f"  Invalid query: cannot start or end with '{operator}'.")
             return []
 
+
     if " AND " in query:
         words = [word.strip() for word in query.split(" AND ")] # Strip whitespace from each word
         for word in words:
@@ -51,9 +60,11 @@ def parse_query(query, index):
                 return []
             elif word not in index: # Check if the word is not in the index
                 print(f"  '{word}' not found in index.")
+                suggest_word(word, index) 
                 return []
         return find_pages(words, index) # Use the find_pages function to get URLs that contain all the words
     
+
     elif " OR " in query:
         words = [word.strip() for word in query.split(" OR ")] # Strip whitespace from each word
         urls = set()
@@ -65,6 +76,7 @@ def parse_query(query, index):
                 urls.update(set(index[word].keys())) # Add URLs that contain the word to the set
             else:
                 print(f"  '{word}' not found in index.")
+                suggest_word(word, index)
                 pass
         if not urls:
             print("  No URLs found.")
@@ -74,6 +86,7 @@ def parse_query(query, index):
         scored.sort(reverse=True)
         return scored
     
+
     elif " NOT " in query:
         words = [word.strip() for word in query.split(" NOT ")] # Strip whitespace from each word
         if len(words) != 2:
@@ -87,6 +100,7 @@ def parse_query(query, index):
 
         if not include_urls:
             print(f"  '{words[0]}' not found in index.")
+            suggest_word(words[0], index) 
             return []
         final_urls = include_urls - exclude_urls
         scored = [(sum(compute_tfidf(word, url, index) for word in [words[0]]), url) for url in final_urls]
@@ -110,3 +124,12 @@ def compute_tfidf(word, url, index):
     idf = log(total_docs / (1 + docs_with_word))  # Adding 1 to avoid division by zero
     
     return tf * idf
+
+# Suggest similar words if the exact word is not found in the index
+def suggest_word(word, index):
+    all_words = list(index.keys())
+    suggestions = get_close_matches(word, all_words, n=3, cutoff=0.6) # Get up to 3 close matches with a similarity cutoff of 0.6
+    if suggestions:
+        print(f"  Did you mean: {', '.join(suggestions)}?")
+    else:
+        print(f"  No similar words found in index for '{word}'.")

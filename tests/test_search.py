@@ -217,6 +217,18 @@ class TestSearchFunctions(unittest.TestCase):
         # AND takes priority, OR is treated as part of second term
         self.assertIsInstance(result, list)
 
+    def test_suggest_word_match(self):
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            print_word("hallo", self.index)  # Misspelled "hello"
+            output = mock_stdout.getvalue()
+            self.assertIn("Did you mean: hello?", output)
+    
+    def test_suggest_word_no_match(self):
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            print_word("xyzaaabc", self.index)  # No similar word in index
+            output = mock_stdout.getvalue()
+            self.assertIn("No similar words found in index for 'xyzaaabc'.", output)
+
 
 if __name__ == '__main__':
     unittest.main()
