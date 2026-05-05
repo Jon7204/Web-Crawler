@@ -6,11 +6,10 @@ from search import print_word, parse_query
 from indexer import build_index
 from crawler import crawl
 
-url = "https://quotes.toscrape.com"
-
-
 def main():
+    url = "https://quotes.toscrape.com"
     index = None
+
     while True:
         raw = input("> ")
         command = raw.lower()
