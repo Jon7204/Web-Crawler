@@ -50,7 +50,7 @@ repository/
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+git clone https://github.com/jon7204/web-crawler.git
 cd YOUR_REPO_NAME
 
 # Install dependencies
