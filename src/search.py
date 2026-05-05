@@ -103,6 +103,9 @@ def parse_query(query, index):
             suggest_word(words[0], index) 
             return []
         final_urls = include_urls - exclude_urls
+        if not final_urls:
+            print(f"  No URLs found for '{words[0]}' excluding '{words[1]}'.")
+            return []
         scored = [(sum(compute_tfidf(word, url, index) for word in [words[0]]), url) for url in final_urls]
         scored.sort(reverse=True)
         return scored
