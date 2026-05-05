@@ -18,7 +18,7 @@ def crawl(base_url, politeness_window=6):
             response.raise_for_status() # Check if the request was successful
             visited.add(url)
             pages[url] = response.text 
-            print(f"Crawled: {url}")
+            print(f"  Crawled: {url}")
 
             # Parse the page and find all links
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -31,6 +31,6 @@ def crawl(base_url, politeness_window=6):
             if to_visit:
                 time.sleep(politeness_window)
         except requests.RequestException as e:
-            print(f"Failed to crawl {url}: {e}")
+            print(f"  Failed to crawl {url}: {e}")
 
     return pages
