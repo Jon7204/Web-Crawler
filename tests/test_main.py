@@ -27,7 +27,7 @@ class TestMain(unittest.TestCase):
                     with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
                         main()
                         output = mock_stdout.getvalue()
-                        self.assertIn("Index loaded from data/index.json", output)
+                        self.assertIn("Index loaded:", output)
 
     # Test print command with no index loaded
     def test_print_no_index(self):

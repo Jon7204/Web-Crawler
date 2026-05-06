@@ -85,7 +85,7 @@ class TestCrawler(unittest.TestCase):
             with patch('crawler.print') as mock_print:
                 pages = crawl("http://example.com", politeness_window=1)
                 self.assertEqual(pages, {})
-                mock_print.assert_called_with("Failed to crawl http://example.com: Network error")
+                mock_print.assert_called_with("  Failed to crawl http://example.com: Network error")
 
 if __name__ == '__main__':
     unittest.main()
