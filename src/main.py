@@ -48,7 +48,7 @@ def main():
             if os.path.exists("data/index.json"):
                 with open("data/index.json", "r") as f:
                     index = json.load(f)
-                print("  Index loaded from data/index.json")
+                print(f"Index loaded: {len(index)} unique words from {len(set(url for postings in index.values() for url in postings))} pages.")
             else:
                 print("  No index found. Please build the index first.")
         
