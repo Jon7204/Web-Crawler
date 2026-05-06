@@ -72,6 +72,8 @@ def main():
             print("  Please specify a word to print. Usage: print <word>")
         elif command == "find":
             print("  Please specify a query to find. Usage: find <query>")
+        elif command == "":
+            pass # Ignore empty input
         else:
             print("  Unknown command. Please try again.")
 
